@@ -1,0 +1,32 @@
+{
+  "EdgeData": [
+    {
+      "NameIndex": 1,
+      "Vertex1": 1,
+      "Vertex2": 2,
+      "Weight": 20
+    }
+  ],
+  "VertexData": [
+    {
+      "NameIndex": 1,
+      "Position": {
+        "X": -5.18,
+        "Y": -0.5,
+        "Z": 0.0
+      },
+      "VertexType": 1,
+      "Value": 2.0
+    },
+    {
+      "NameIndex": 2,
+      "Position": {
+        "X": 7.70000029,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "VertexType": 2,
+      "Value": 0.5
+    }
+  ]
+}

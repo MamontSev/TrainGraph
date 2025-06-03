@@ -1,0 +1,206 @@
+{
+  "EdgeData": [
+    {
+      "NameIndex": 1,
+      "Vertex1": 2,
+      "Vertex2": 7,
+      "Weight": 5
+    },
+    {
+      "NameIndex": 2,
+      "Vertex1": 3,
+      "Vertex2": 7,
+      "Weight": 6
+    },
+    {
+      "NameIndex": 3,
+      "Vertex1": 2,
+      "Vertex2": 12,
+      "Weight": 12
+    },
+    {
+      "NameIndex": 4,
+      "Vertex1": 3,
+      "Vertex2": 12,
+      "Weight": 7
+    },
+    {
+      "NameIndex": 5,
+      "Vertex1": 6,
+      "Vertex2": 12,
+      "Weight": 30
+    },
+    {
+      "NameIndex": 6,
+      "Vertex1": 5,
+      "Vertex2": 12,
+      "Weight": 15
+    },
+    {
+      "NameIndex": 7,
+      "Vertex1": 11,
+      "Vertex2": 6,
+      "Weight": 2
+    },
+    {
+      "NameIndex": 8,
+      "Vertex1": 5,
+      "Vertex2": 11,
+      "Weight": 20
+    },
+    {
+      "NameIndex": 9,
+      "Vertex1": 9,
+      "Vertex2": 6,
+      "Weight": 25
+    },
+    {
+      "NameIndex": 10,
+      "Vertex1": 10,
+      "Vertex2": 5,
+      "Weight": 3
+    },
+    {
+      "NameIndex": 11,
+      "Vertex1": 9,
+      "Vertex2": 1,
+      "Weight": 22
+    },
+    {
+      "NameIndex": 12,
+      "Vertex1": 10,
+      "Vertex2": 4,
+      "Weight": 3
+    },
+    {
+      "NameIndex": 13,
+      "Vertex1": 9,
+      "Vertex2": 2,
+      "Weight": 12
+    },
+    {
+      "NameIndex": 14,
+      "Vertex1": 5,
+      "Vertex2": 3,
+      "Weight": 13
+    },
+    {
+      "NameIndex": 15,
+      "Vertex1": 1,
+      "Vertex2": 4,
+      "Weight": 6
+    }
+  ],
+  "VertexData": [
+    {
+      "NameIndex": 1,
+      "Position": {
+        "X": 17.2,
+        "Y": 5.98,
+        "Z": 0.0
+      },
+      "VertexType": 2,
+      "Value": 1.9
+    },
+    {
+      "NameIndex": 2,
+      "Position": {
+        "X": -0.9699993,
+        "Y": 6.75,
+        "Z": 0.0
+      },
+      "VertexType": 2,
+      "Value": 5.8
+    },
+    {
+      "NameIndex": 3,
+      "Position": {
+        "X": -1.54999924,
+        "Y": -10.26,
+        "Z": 0.0
+      },
+      "VertexType": 2,
+      "Value": 3.0
+    },
+    {
+      "NameIndex": 4,
+      "Position": {
+        "X": 17.5,
+        "Y": -9.89,
+        "Z": 0.0
+      },
+      "VertexType": 2,
+      "Value": 0.5
+    },
+    {
+      "NameIndex": 5,
+      "Position": {
+        "X": 8.110001,
+        "Y": -7.09,
+        "Z": 0.0
+      },
+      "VertexType": 1,
+      "Value": 4.0
+    },
+    {
+      "NameIndex": 6,
+      "Position": {
+        "X": 7.76000071,
+        "Y": 3.62,
+        "Z": 0.0
+      },
+      "VertexType": 1,
+      "Value": 2.0
+    },
+    {
+      "NameIndex": 7,
+      "Position": {
+        "X": -8.309999,
+        "Y": -1.31,
+        "Z": 0.0
+      },
+      "VertexType": 0,
+      "Value": 0.0
+    },
+    {
+      "NameIndex": 9,
+      "Position": {
+        "X": 8.210001,
+        "Y": 9.63,
+        "Z": 0.0
+      },
+      "VertexType": 0,
+      "Value": 0.0
+    },
+    {
+      "NameIndex": 10,
+      "Position": {
+        "X": 7.640001,
+        "Y": -17.9,
+        "Z": 0.0
+      },
+      "VertexType": 0,
+      "Value": 0.0
+    },
+    {
+      "NameIndex": 11,
+      "Position": {
+        "X": 13.7200012,
+        "Y": -1.24,
+        "Z": 0.0
+      },
+      "VertexType": 0,
+      "Value": 0.0
+    },
+    {
+      "NameIndex": 12,
+      "Position": {
+        "X": 0.870000839,
+        "Y": -0.97,
+        "Z": 0.0
+      },
+      "VertexType": 0,
+      "Value": 0.0
+    }
+  ]
+}

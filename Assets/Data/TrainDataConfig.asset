@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf9f2703347f9c64aa32636e48b68c17, type: 3}
+  m_Name: TrainDataConfig
+  m_EditorClassIdentifier: 
+  ItemList:
+  - _selfType: 0
+    _movementSpeed: 200
+    _extractionTime: 20
+  - _selfType: 1
+    _movementSpeed: 5
+    _extractionTime: 1
+  - _selfType: 2
+    _movementSpeed: 300
+    _extractionTime: 0.3
