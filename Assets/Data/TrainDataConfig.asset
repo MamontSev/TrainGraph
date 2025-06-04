@@ -20,5 +20,5 @@ MonoBehaviour:
     _movementSpeed: 5
     _extractionTime: 1
   - _selfType: 2
-    _movementSpeed: 300
-    _extractionTime: 0.3
+    _movementSpeed: 1000
+    _extractionTime: 50

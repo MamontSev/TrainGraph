@@ -111,7 +111,8 @@ namespace Mamont.Core.Train.Model
 			var list = _selfData.VertexDict.Keys.ToList();
 			int r = UnityEngine.Random.Range(0 , list.Count);
 			_selfData.CurrVertexName = list[r];
-			_selfActions.SetCurrVertex (_selfData.CurrVertexName);
+			_selfData.TargetVertexName = _selfData.CurrVertexName;
+			_selfActions.CompleteGoToVertex (_selfData.CurrVertexName);
 
 			_stateMachine.Enter<GoToMineStateState>();
 		}

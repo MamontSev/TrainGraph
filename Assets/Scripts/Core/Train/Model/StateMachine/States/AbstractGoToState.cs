@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Mamont.Core.Graph.Notion;
 
@@ -44,63 +45,66 @@ namespace Mamont.Core.Train.Model
 			_wasChangeGraphValueOnGo = true;
 		}
 
-		
-
-		private int _currPathIndex;
-		private int _targetVertexName;
-		private ModelEdgeData _currEdge;
-		private float _currGoValue;
 		private bool _wasChangeGraphValueOnGo;
-		protected void GoToVertex( int _pathIndex )
+
+		protected int _currPathIndex;
+		protected ModelEdgeData _currEdge;
+
+		protected List<int> _currWalkPath = new();
+		protected float _currGoValue;
+
+
+		protected void GoToVertex( int _pathIndex, float goValue = 0.0f )
 		{
 			_wasChangeGraphValueOnGo = false;
-			_currGoValue = 0.0f;
+			_currGoValue = goValue;
 			_currPathIndex = _pathIndex;
-			_targetVertexName = _selfData.CurrWalkPath[_currPathIndex];
+			_selfData.TargetVertexName = _currWalkPath[_currPathIndex];
 
 			foreach( var item in _selfData.EdgesDict )
 			{
-				if( item.Value.Vertex1 == _selfData.CurrVertexName && item.Value.Vertex2 == _targetVertexName )
+				if( item.Value.Vertex1 == _selfData.CurrVertexName && item.Value.Vertex2 == _selfData.TargetVertexName )
 				{
 					_currEdge = item.Value;
 					break;
 				}
-				if( item.Value.Vertex2 == _selfData.CurrVertexName && item.Value.Vertex1 == _targetVertexName )
+				if( item.Value.Vertex2 == _selfData.CurrVertexName && item.Value.Vertex1 == _selfData.TargetVertexName )
 				{
 					_currEdge = item.Value;
 					break;
 				}
 			}
+			_selfActions.SetPathStartIndex(_currPathIndex);
 		}
 
-		protected void UpdateGo( Action onComplete , Action onVertexChanged )
+		protected void UpdateGo( Action onComplete , Action onChangedGraphValue )
 		{
 			_currGoValue += _selfData.MovementSpeed * Time.deltaTime;
 			if(  _currEdge.Weight != 0.0f )
 			{
-				_selfActions.PathProgress(_selfData.CurrVertexName , _targetVertexName , _currGoValue / _currEdge.Weight);
+				_selfActions.PathProgress(_selfData.CurrVertexName , _selfData.TargetVertexName , _currGoValue / _currEdge.Weight);
 			}
+		
 			if( _currGoValue < _currEdge.Weight )
 			{
+				if( _wasChangeGraphValueOnGo )
+				{
+					_selfActions.PathComplete();
+					onChangedGraphValue?.Invoke();
+				}
 				return;
 			}
 			_currGoValue = _currEdge.Weight;
-			_selfData.CurrVertexName = _targetVertexName;
-			_selfActions.SetCurrVertex(_selfData.CurrVertexName);
+			_selfData.CurrVertexName = _selfData.TargetVertexName;
+			_selfActions.CompleteGoToVertex(_selfData.CurrVertexName);
 
-			if( _currPathIndex == _selfData.CurrWalkPath.Count - 1 )
+			if( _currPathIndex == _currWalkPath.Count - 1 )
 			{
 				_selfActions.PathComplete();
 				onComplete?.Invoke();
 				return;
 			}
-
-			if( _wasChangeGraphValueOnGo )
-			{
-				_selfActions.PathComplete();
-				onVertexChanged?.Invoke();
-				return;
-			}
+			
 			GoToVertex(_currPathIndex + 1);
 		}
 

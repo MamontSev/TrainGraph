@@ -5,26 +5,31 @@ namespace Mamont.Core.Train.Model
 {
 	public class TrainModelActions:ITrainModelActionsListener
 	{
-		public event Action<int> OnSetCurrVetrex;
-		public event Action<List<int> , int> OnSetPathToBase;
-		public event Action<List<int> , int> OnSetPathToMine;
+		public event Action<int> OnCompleteGoToVertex;
+		public event Action<List<int>> OnSetPathToBase;
+		public event Action<List<int>> OnSetPathToMine;
+		public event Action<int> OnSetPathStartIndex;
 		public event Action<float> OnMineProgress;
 		public event Action OnMineComplete;
-		public event Action<int,int,float> OnPathProgress;
+		public event Action<int , int , float> OnPathProgress;
 		public event Action OnPathComplete;
 		public event Action OnChangedGraphValue;
 
-		public void SetCurrVertex( int index )
+		public void CompleteGoToVertex( int index )
 		{
-			OnSetCurrVetrex?.Invoke(index);
+			OnCompleteGoToVertex?.Invoke(index);
 		}
-		public void SetPathToBase( List<int> path , int startVertex )
+		public void SetPathToBase( List<int> path )
 		{
-			OnSetPathToBase?.Invoke(path , startVertex);
+			OnSetPathToBase?.Invoke(path);
 		}
-		public void SetPathToMine( List<int> path , int startVertex )
+		public void SetPathToMine( List<int> path )
 		{
-			OnSetPathToMine?.Invoke(path , startVertex);
+			OnSetPathToMine?.Invoke(path);
+		}
+		public void SetPathStartIndex(int index )
+		{
+			OnSetPathStartIndex?.Invoke(index);
 		}
 		public void MineProgress( float timeMineRemaining )
 		{
@@ -34,9 +39,9 @@ namespace Mamont.Core.Train.Model
 		{
 			OnMineComplete?.Invoke();
 		}
-		public void PathProgress(int currVertexName, int targetVertexName, float progress )
+		public void PathProgress( int currVertexName , int targetVertexName , float progress )
 		{
-			OnPathProgress?.Invoke(currVertexName, targetVertexName,progress);
+			OnPathProgress?.Invoke(currVertexName , targetVertexName , progress);
 		}
 		public void PathComplete()
 		{

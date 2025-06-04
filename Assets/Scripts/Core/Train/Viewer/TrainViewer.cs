@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 using Mamont.Core.Graph.Viewer;
 using Mamont.Core.Train.Model;
@@ -34,9 +35,10 @@ namespace Mamont.Core.Train.Viewer
 		}
 		private void OnEnable()
 		{
-			_asctionListener.OnSetCurrVetrex += SetOnPos;
+			_asctionListener.OnCompleteGoToVertex += SetOnPos;
 			_asctionListener.OnSetPathToBase += SetPathBase;
 			_asctionListener.OnSetPathToMine += SetPathMine;
+			_asctionListener.OnSetPathStartIndex += SetPathStartPos;
 			_asctionListener.OnMineProgress += ShowValue;
 			_asctionListener.OnMineComplete += HideValue;
 			_asctionListener.OnPathProgress += SetOnEdge;
@@ -44,9 +46,10 @@ namespace Mamont.Core.Train.Viewer
 		}
 		private void OnDisable()
 		{
-			_asctionListener.OnSetCurrVetrex -= SetOnPos;
+			_asctionListener.OnCompleteGoToVertex -= SetOnPos;
 			_asctionListener.OnSetPathToBase -= SetPathBase;
 			_asctionListener.OnSetPathToMine -= SetPathMine;
+			_asctionListener.OnSetPathStartIndex -= SetPathStartPos;
 			_asctionListener.OnMineProgress -= ShowValue;
 			_asctionListener.OnMineComplete -= HideValue;
 			_asctionListener.OnPathProgress -= SetOnEdge;
@@ -73,6 +76,7 @@ namespace Mamont.Core.Train.Viewer
 		{
 			CheckMovement();
 			CheckExstraction();
+			UpdateLinerenderer();
 		}
 
 		private void CheckMovement()
@@ -88,7 +92,7 @@ namespace Mamont.Core.Train.Viewer
 		{
 			if( _extractionTime == _prevExtractionTime )
 				return;
-			if(_extractionTime < 0.0f)
+			if( _extractionTime < 0.0f )
 				_extractionTime = 0.0f;
 			_prevExtractionTime = _extractionTime;
 			_eventBusService.Invoke(new TrainExtractionTimeChangedSignal(_extractionTime));
@@ -108,34 +112,48 @@ namespace Mamont.Core.Train.Viewer
 			_movableObj.position = Vector3.Lerp(pos1 , pos2 , value);
 		}
 
+		private List<int> _path;
 		[SerializeField]
 		private LineRenderer _lineRenderer;
 		[SerializeField]
 		private Material _mine;
 		[SerializeField]
 		private Material _base;
-		private void SetPathMine( List<int> path , int startVertexName )
+		private void SetPathMine( List<int> path )
 		{
 			_lineRenderer.material = _mine;
-			ShowLinerenderer(path , startVertexName);
+			_path = path;
+			_lineRenderer.enabled = true;
+			_pathStartIndex = 0;
 		}
-		private void SetPathBase( List<int> path , int startVertexName )
+		private void SetPathBase( List<int> path )
 		{
 			_lineRenderer.material = _base;
-			ShowLinerenderer(path , startVertexName);
+			_path = path;
+			_lineRenderer.enabled = true;
+			_pathStartIndex = 0;
+		}
+		private int _pathStartIndex = 0;
+		private void SetPathStartPos( int index )
+		{
+			_pathStartIndex = index;
 		}
 		private void HidePath()
 		{
 			_lineRenderer.enabled = false;
 		}
-		private void ShowLinerenderer( List<int> path , int startVertexName )
+		private void UpdateLinerenderer()
 		{
-			path.Insert(0 , startVertexName);
-			_lineRenderer.enabled = true;
-			_lineRenderer.positionCount = path.Count;
-			for( int i = 0; i < path.Count; i++ )
+			if( _lineRenderer.enabled == false )
+				return;
+			int partLength = _path.Count - _pathStartIndex;
+			_lineRenderer.positionCount = partLength + 1;
+			_lineRenderer.SetPosition(0 , _movableObj.position);
+			int partIndex = _pathStartIndex;
+			for( int i = 0; i < partLength; i++ )
 			{
-				_lineRenderer.SetPosition(i , _graphViewer.GetVertexTransform(path[i]).position);
+				_lineRenderer.SetPosition(i + 1 , _graphViewer.GetVertexTransform(_path[partIndex]).position);
+				partIndex++;
 			}
 		}
 

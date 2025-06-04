@@ -21,11 +21,11 @@ namespace Manmont.Tools
 		{
 			string s;
 			// к нулю близко в вычислениях получается типа 	1E-7f
-			if( val < 0.01 )
-			{
-				s = "0";
-				return s;
-			}
+			//if( val < 0.01 )
+			//{
+			//	s = "0";
+			//	return s;
+			//}
 			if( val < 1.0 )
 			{
 				s = subStr(val.ToString() , 4);

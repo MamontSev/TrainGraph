@@ -10,25 +10,25 @@
       "NameIndex": 2,
       "Vertex1": 2,
       "Vertex2": 3,
-      "Weight": 40
+      "Weight": 20
     },
     {
       "NameIndex": 4,
       "Vertex1": 5,
       "Vertex2": 4,
-      "Weight": 20
+      "Weight": 50
     },
     {
       "NameIndex": 5,
       "Vertex1": 5,
       "Vertex2": 6,
-      "Weight": 100
+      "Weight": 10
     },
     {
       "NameIndex": 3,
       "Vertex1": 3,
       "Vertex2": 4,
-      "Weight": 10
+      "Weight": 40
     },
     {
       "NameIndex": 6,
@@ -40,7 +40,7 @@
       "NameIndex": 7,
       "Vertex1": 6,
       "Vertex2": 7,
-      "Weight": 10
+      "Weight": 20
     },
     {
       "NameIndex": 8,
@@ -91,8 +91,8 @@
     {
       "NameIndex": 3,
       "Position": {
-        "X": 5.7,
-        "Y": 5.6,
+        "X": 4.17,
+        "Y": 4.2,
         "Z": 0.0
       },
       "VertexType": 0,
@@ -106,7 +106,7 @@
         "Z": 0.0
       },
       "VertexType": 2,
-      "Value": 7.5
+      "Value": 0.2
     },
     {
       "NameIndex": 5,
@@ -146,7 +146,7 @@
         "Z": 0.0
       },
       "VertexType": 2,
-      "Value": 8.6
+      "Value": 1.0
     },
     {
       "NameIndex": 9,
@@ -156,7 +156,7 @@
         "Z": 0.0
       },
       "VertexType": 2,
-      "Value": 4.1
+      "Value": 0.9
     },
     {
       "NameIndex": 10,

@@ -17,8 +17,7 @@ namespace Mamont.Core.Train.Model
 		public Dictionary<int , ModelVertexData> VertexDict = new();
 		public Dictionary<int , ModelEdgeData> EdgesDict = new();
 		public int CurrVertexName;
-
-		public List<int> CurrWalkPath = new();
+		public int TargetVertexName;
 
 	}
 

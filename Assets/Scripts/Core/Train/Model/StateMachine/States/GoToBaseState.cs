@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 using Mamont.Core.Graph.Notion;
 using Mamont.Data.Graph.Builder;
 
-using UnityEngine;
 
 namespace Mamont.Core.Train.Model
 {
@@ -27,41 +25,94 @@ namespace Mamont.Core.Train.Model
 				_stateMachine.Enter<BaseProgressState>();
 				return;
 			}
-			_graphNotion.Calculate(_selfData.CurrVertexName , out Dictionary<int , int> outDistances);
-			int bestVertexName = 1;
-            foreach (var item in _selfData.VertexDict)
-            {
-				if( item.Value.Type == GraphVertexType.Base )
-				{
-					bestVertexName = item.Key;
-					break;
-				}
-            }           
-			float bestParam = 0.0f;
+			CalculateFromVertex(
+			 _selfData.CurrVertexName ,
+			 out _currWalkPath);
+
+
+			_currWalkPath.Reverse();
+			_selfActions.SetPathToBase(new List<int>(_currWalkPath));
+			GoToVertex(0);
+
+		}
+
+		private void CalculateFromVertex( int startVertex , out List<int> path , float offsetValue = 0.0f , int offfsetVertex = -1 )
+		{
+			int targetIndex = 1;
+			float param = -1.0f;
+			_graphNotion.Calculate(startVertex , out Dictionary<int , int> outDistances);
 			foreach( var item in outDistances )
 			{
 				int vertexName = item.Key;
+				float dist = item.Value;
+				if( vertexName == offfsetVertex )
+				{
+					dist -= offsetValue;
+				}
+
 				if( _selfData.VertexDict[vertexName].Type != GraphVertexType.Base )
 				{
 					continue;
 				}
-
-				float newParam = _selfData.VertexDict[vertexName].Value / item.Value;
-				if( newParam > bestParam )
+				float newParam;
+				if( _selfData.VertexDict[vertexName].Value == 0.0f )
 				{
-					bestParam = newParam;
-					bestVertexName = vertexName;
+					newParam = 0.0f;
+				}
+				else if( dist == 0.0f )
+				{
+					newParam = _selfData.VertexDict[vertexName].Value;
+				}
+				else
+				{
+					newParam = _selfData.VertexDict[vertexName].Value / dist;
+				}
+				if( newParam > param )
+				{
+					param = newParam;
+					targetIndex = vertexName;
 				}
 			}
-			_graphNotion.GetPath(_selfData.CurrVertexName , bestVertexName , out _selfData.CurrWalkPath);
-			_selfData.CurrWalkPath.Reverse();
-			_selfActions.SetPathToBase(new List<int>(_selfData.CurrWalkPath) , _selfData.CurrVertexName);
-			GoToVertex(0);
-		}
-		public override void Update()
-		{
-			UpdateGo(() => { _stateMachine.Enter<BaseProgressState>(); } , () => { _stateMachine.Enter<GoToBaseState>(); });
+			_graphNotion.GetPath(startVertex , targetIndex , out path);
 		}
 
+
+		public override void Update()
+		{
+			UpdateGo(() => { _stateMachine.Enter<BaseProgressState>(); } , OnChangedGraphValue);
+		}
+
+		private void OnChangedGraphValue()
+		{
+			CalculateFromVertex(
+				 _selfData.CurrVertexName ,
+				 out List<int> path ,
+				 _currGoValue ,
+				 _selfData.TargetVertexName);
+			path.Reverse();
+
+			if( path.Count == 0 )
+			{
+				_currWalkPath = path;
+				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
+				_selfData.CurrVertexName = _selfData.TargetVertexName;
+				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
+				GoToVertex(0 , _currEdge.Weight - _currGoValue);
+			}
+			else if( path[0] == _selfData.TargetVertexName )
+			{
+				_currWalkPath = path;
+				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
+				GoToVertex(0 , _currGoValue);
+			}
+			else
+			{
+				_currWalkPath = path;
+				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
+				_selfData.CurrVertexName = _selfData.TargetVertexName;
+				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
+				GoToVertex(0 , _currEdge.Weight - _currGoValue);
+			}
+		}
 	}
 }
