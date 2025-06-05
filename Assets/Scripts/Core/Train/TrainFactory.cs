@@ -1,4 +1,5 @@
-﻿using Mamont.Core.Train.Model;
+﻿using Mamont.Core.Inspector;
+using Mamont.Core.Train.Model;
 using Mamont.Core.Train.Viewer;
 using Mamont.Data.Graph.Config;
 using Mamont.Data.Train;
@@ -15,18 +16,21 @@ namespace Mamont.Core.Train
 		private DiContainer _diContainer;
 		private IGameLevelsService _gameLevelsService;
 		private ITrainDataConfig _trainDataConfig;
+		private InsperctorValue _insperctorValue;
 
 		[Inject]
 		private void Construct
 		(
 			DiContainer _diContainer ,
 			IGameLevelsService _gameLevelsService ,
-			ITrainDataConfig _trainDataConfig
+			ITrainDataConfig _trainDataConfig,
+			InsperctorValue _insperctorValue
 		)
 		{
 			this._diContainer = _diContainer;
 			this._gameLevelsService = _gameLevelsService;
 			this._trainDataConfig = _trainDataConfig;
+			this._insperctorValue = _insperctorValue;
 		}
 
 		[SerializeField]
@@ -37,6 +41,8 @@ namespace Mamont.Core.Train
 
 		public void Create( TrainType trainType )
 		{
+			CreateInspectorValue(trainType);
+
 			CreateActions(out TrainModelActions actions);
 
 			CreateViewer(trainType,actions);
@@ -63,17 +69,25 @@ namespace Mamont.Core.Train
 				modelData.EdgesDict.Add(edge.NameIndex , new ModelEdgeData { Weight = edge.Weight , Vertex1 = edge.Vertex1 , Vertex2 = edge.Vertex2 });
 			}
 		}
+
+		
+
 		private void CreateViewer( TrainType trainType, TrainModelActions actions ) 
 		{
 			TrainViewer viewer = _diContainer.InstantiatePrefabForComponent<TrainViewer>(
 			  _trainViewerPrefab.gameObject ,
 			  _parentTransform,
-			  new object[]{ actions, _trainDataConfig.GetTrainData(trainType) });
+			  new object[]{ actions/*, _trainDataConfig.GetTrainData(trainType)*/ });
 			viewer.name = trainType.ToString();
 		}
 		private void CreateActions(out TrainModelActions actions)
 		{
 			actions = new();
+		}
+
+		private void CreateInspectorValue( TrainType trainType )
+		{
+			_insperctorValue.AddTrain(_trainDataConfig.GetTrainData(trainType));
 		}
 	}
 }

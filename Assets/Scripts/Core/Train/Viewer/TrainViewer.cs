@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 
 using Mamont.Core.Graph.Viewer;
 using Mamont.Core.Train.Model;
-using Mamont.Events;
-using Mamont.Events.Signals;
 
 using TMPro;
 
@@ -18,20 +15,15 @@ namespace Mamont.Core.Train.Viewer
 	{
 		private GraphViewer _graphViewer;
 		private ITrainModelActionsListener _asctionListener;
-		private IEventBusService _eventBusService;
 		[Inject]
 		private void Construct
 		(
 			GraphViewer _graphViewer ,
-			ITrainModelActionsListener _asctionListener ,
-			IEventBusService _eventBusService ,
-			(float movementSpeed, float extractionTime) tuple
+			ITrainModelActionsListener _asctionListener 
 		)
 		{
 			this._graphViewer = _graphViewer;
 			this._asctionListener = _asctionListener;
-			this._eventBusService = _eventBusService;
-			SetMovementExtraction(tuple);
 		}
 		private void OnEnable()
 		{
@@ -56,46 +48,9 @@ namespace Mamont.Core.Train.Viewer
 			_asctionListener.OnPathComplete -= HidePath;
 		}
 
-		[SerializeField]
-		private float _movementSpeed;
-		private float _prevMovementSpeed;
-		[SerializeField]
-		public float _extractionTime;
-		private float _prevExtractionTime;
-
-		private void SetMovementExtraction( (float movementSpeed, float extractionTime) tuple )
-		{
-			_movementSpeed = tuple.movementSpeed;
-			_prevMovementSpeed = tuple.movementSpeed;
-
-			_extractionTime = tuple.extractionTime;
-			_prevExtractionTime = tuple.extractionTime;
-		}
-
 		private void Update()
 		{
-			CheckMovement();
-			CheckExstraction();
 			UpdateLinerenderer();
-		}
-
-		private void CheckMovement()
-		{
-			if( _movementSpeed == _prevMovementSpeed )
-				return;
-			if( _movementSpeed < 0.0f )
-				_movementSpeed = 0.0f;
-			_prevMovementSpeed = _movementSpeed;
-			_eventBusService.Invoke(new TrainMovementSpeedChangedSignal(_movementSpeed));
-		}
-		private void CheckExstraction()
-		{
-			if( _extractionTime == _prevExtractionTime )
-				return;
-			if( _extractionTime < 0.0f )
-				_extractionTime = 0.0f;
-			_prevExtractionTime = _extractionTime;
-			_eventBusService.Invoke(new TrainExtractionTimeChangedSignal(_extractionTime));
 		}
 
 

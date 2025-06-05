@@ -16,6 +16,7 @@ namespace Mamont.Core.Graph.Viewer
 		private void Construct( IEventBusService _eventBusService )
 		{
 			this._eventBusService = _eventBusService;
+			Subscribe();
 		}
 		[SerializeField]
 		private ViewVertexItemEmpty _emptyPrefab;
@@ -49,14 +50,14 @@ namespace Mamont.Core.Graph.Viewer
 		{
 			var item = Instantiate(_minePrefab , _vertexContainer).GetComponent<ViewVertexItemMine>();
 			item.Init(startValue , index , pos);
-			item.OnValueChanged += OnVetexValueChanged;
+			//item.OnValueChanged += OnVetexValueChanged;
 			_vertexList.Add(item);
 		}
 		public void AddVertexBase( int index , Vector3 pos , float startValue )
 		{
 			var item = Instantiate(_basePrefab , _vertexContainer).GetComponent<ViewVertexItemBase>();
 			item.Init(startValue , index , pos);
-			item.OnValueChanged += OnVetexValueChanged;
+			//item.OnValueChanged += OnVetexValueChanged;
 			_vertexList.Add(item);
 		}
 
@@ -67,22 +68,49 @@ namespace Mamont.Core.Graph.Viewer
 
 			var item = Instantiate(_edgePrefab , _edgeContainer).GetComponent<ViewEdgeItem>();
 			item.Init(startValue , index , pos1 , pos2);
-			item.OnValueChanged += OnEdgeValueChanged;
+			//item.OnValueChanged += OnEdgeValueChanged;
 			_edgeList.Add(item);
 		}
 
-		public Transform GetVertexTransform(int vertexName)
+		public Transform GetVertexTransform( int vertexName )
 		{
 			return _vertexList.Find(x => x.NameIndex == vertexName).transform;
 		}
 
-		private void OnVetexValueChanged( float value , int nameIndex )
+
+		private void Subscribe()
 		{
-			_eventBusService.Invoke(new GraphVertexValueChangedSignal(value , nameIndex));
+			_eventBusService.Subscribe<GraphEdgeValueChangedSignal>(OnGraphEdgeValueChangedSignal);
+			_eventBusService.Subscribe<GraphVertexValueChangedSignal>(OnGraphVertexValueChangedSignal);
+			_eventBusService.Subscribe<ExitGamePlayState>(OnExitGamePlayState);
 		}
-		private void OnEdgeValueChanged( int value , int nameIndex )
+
+		private void Unsubscribe()
 		{
-			_eventBusService.Invoke(new GraphEdgeValueChangedSignal(value , nameIndex));
+			_eventBusService.Unsubscribe<GraphEdgeValueChangedSignal>(OnGraphEdgeValueChangedSignal);
+			_eventBusService.Unsubscribe<GraphVertexValueChangedSignal>(OnGraphVertexValueChangedSignal);
+			_eventBusService.Unsubscribe<ExitGamePlayState>(OnExitGamePlayState);
+		}
+
+		private void OnExitGamePlayState( ExitGamePlayState state )
+		{
+			Unsubscribe();
+		}
+
+
+		private void OnGraphVertexValueChangedSignal( GraphVertexValueChangedSignal signal )
+		{
+			var item = _vertexList.Find(x => x.NameIndex == signal.NameIndex);
+			if( item is ViewVertexItemWithValue valueItem )
+			{
+				valueItem.SetGizmoValueText(signal.Value);
+			}
+
+		}
+
+		private void OnGraphEdgeValueChangedSignal( GraphEdgeValueChangedSignal signal )
+		{
+			_edgeList.Find(x => x.NameIndex == signal.NameIndex).SetGizmoValueText(signal.Value);
 		}
 	}
 }

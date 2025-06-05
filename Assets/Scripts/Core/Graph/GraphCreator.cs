@@ -1,5 +1,6 @@
 ﻿using Mamont.Core.Graph.Notion;
 using Mamont.Core.Graph.Viewer;
+using Mamont.Core.Inspector;
 using Mamont.Data.Graph.Builder;
 using Mamont.Data.Graph.Config;
 using Mamont.GameLevels;
@@ -14,16 +15,19 @@ namespace Mamont.Core.Graph
 		private readonly GraphViewer _graphViewer;
 		private readonly IGameLevelsService _gameLevelsService;
 		private readonly GraphNotion _graphNotion;
+		private readonly InsperctorValue _insperctorValue;
 		public GraphCreator
 		(
 			 GraphViewer _graphViewer ,
 			 IGameLevelsService _gameLevelsServic ,
-			 GraphNotion _graphNotion
+			 GraphNotion _graphNotion ,
+			 InsperctorValue _insperctorValue
 		)
 		{
 			this._graphViewer = _graphViewer;
 			this._gameLevelsService = _gameLevelsServic;
 			this._graphNotion = _graphNotion;
+			this._insperctorValue = _insperctorValue;
 		}
 
 		private GraphDataConfig data;					 
@@ -34,6 +38,7 @@ namespace Mamont.Core.Graph
 
 			CreateView();
 			CreateNotion();
+			InitInspector();
 		}
 
 		private void CreateView()
@@ -69,9 +74,6 @@ namespace Mamont.Core.Graph
 
 		private void CreateNotion()
 		{
-			int levelIndex = _gameLevelsService.CurrPlayedLevel;
-			data = _gameLevelsService.GetDataConfig(levelIndex);
-
 			foreach( var vertex in data.VertexData )
 			{
 				_graphNotion.AddVertex(vertex.NameIndex);
@@ -80,6 +82,21 @@ namespace Mamont.Core.Graph
 			foreach( var edge in data.EdgeData )
 			{
 				_graphNotion.AddEdge(edge.Vertex1 , edge.Vertex2 , edge.Weight , edge.NameIndex);
+			}
+		}
+
+		private void InitInspector()
+		{
+			foreach( var vertex in data.VertexData )
+			{
+				if( vertex.VertexType == GraphVertexType.Empty )
+					continue;				
+				_insperctorValue.AddVertex(vertex.Value,vertex.NameIndex, vertex.VertexType);
+			}
+
+			foreach( var edge in data.EdgeData )
+			{
+				_insperctorValue.AddEdge(edge.Weight , edge.NameIndex);
 			}
 		}
 	}

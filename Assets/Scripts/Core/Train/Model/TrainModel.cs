@@ -47,7 +47,7 @@ namespace Mamont.Core.Train.Model
 		{
 			_stateMachine = new TrainModelStateMachine();
 			_stateMachine.Register<StartAwaitState>(new StartAwaitState());
-			_stateMachine.Register<GoToMineStateState>(new GoToMineStateState(_graphNotion, _selfData, _selfActions, _stateMachine));
+			_stateMachine.Register<GoToMineState>(new GoToMineState(_graphNotion, _selfData, _selfActions, _stateMachine));
 			_stateMachine.Register<MineProgressState>(new MineProgressState( _selfData, _selfActions, _stateMachine));
 			_stateMachine.Register<GoToBaseState>(new GoToBaseState(_graphNotion , _selfData , _selfActions , _stateMachine));
 			_stateMachine.Register<BaseProgressState>(new BaseProgressState(_selfData ,  _stateMachine, _scoreControl));
@@ -69,6 +69,8 @@ namespace Mamont.Core.Train.Model
 		{
 			_eventBusService.Unsubscribe<GraphEdgeValueChangedSignal>(OnGraphEdgeValueChangedSignal);
 			_eventBusService.Unsubscribe<GraphVertexValueChangedSignal>(OnGraphVertexValueChangedSignal);
+			_eventBusService.Unsubscribe<TrainMovementSpeedChangedSignal>(OnTrainMovementSpeedChangedSignal);
+			_eventBusService.Unsubscribe<TrainExtractionTimeChangedSignal>(OnTrainExtractionTimeChangedSignal);
 			_eventBusService.Unsubscribe<ExitGamePlayState>(OnExitGamePlayState);
 			_eventBusService.Unsubscribe<LevelInitCompletedSignal>(OnLevelInitCompletedSignal);
 		}
@@ -114,7 +116,7 @@ namespace Mamont.Core.Train.Model
 			_selfData.TargetVertexName = _selfData.CurrVertexName;
 			_selfActions.CompleteGoToVertex (_selfData.CurrVertexName);
 
-			_stateMachine.Enter<GoToMineStateState>();
+			_stateMachine.Enter<GoToMineState>();
 		}
 
 		public void Update()

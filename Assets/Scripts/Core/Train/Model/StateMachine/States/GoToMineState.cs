@@ -5,9 +5,9 @@ using Mamont.Data.Graph.Builder;
 
 namespace Mamont.Core.Train.Model
 {
-	public class GoToMineStateState:AbstractGoToState
+	public class GoToMineState:AbstractGoToState
 	{
-		public GoToMineStateState
+		public GoToMineState
 		( 
 			GraphNotion _graphNotion ,
 			ModelData _selfData ,
@@ -26,22 +26,19 @@ namespace Mamont.Core.Train.Model
 			}
 			CalculateFromVertex(
 			 _selfData.CurrVertexName ,
-			 out _currWalkPath);
-
-			_currWalkPath.Reverse();
-			_selfActions.SetPathToMine(new List<int>(_currWalkPath));
-			GoToVertex(0);
+			 out List<int> path);
+			StartGo(path , this.GetType());
 		}
 
-		private void CalculateFromVertex( int startVertex , out List<int> path , float offsetValue = 0.0f , int offfsetVertex = -1 )
+		private void CalculateFromVertex( int startVertex , out List<int> path , float offsetValue = 0.0f , int offsetVertex = -1 )
 		{
 			_graphNotion.Calculate(_selfData.CurrVertexName , out Dictionary<int , int> outDistances);
-			int targetIndex = 1;
+			int targetVertex = 1;
 			foreach( var item in _selfData.VertexDict )
 			{
 				if( item.Value.Type == GraphVertexType.Mine )
 				{
-					targetIndex = item.Key;
+					targetVertex = item.Key;
 					break;
 				}
 			}
@@ -49,19 +46,25 @@ namespace Mamont.Core.Train.Model
 			foreach( var item in outDistances )
 			{
 				int vertexName = item.Key;
+				float dist = item.Value;
+				if( vertexName == offsetVertex )
+				{
+					dist -= offsetValue;
+				}
 				if( _selfData.VertexDict[vertexName].Type != GraphVertexType.Mine )
 				{
 					continue;
 				}
 
-				float newTime = item.Value + ( _selfData.VertexDict[vertexName].Value * _selfData.ExtractionTime );
+				float newTime = dist + ( _selfData.VertexDict[vertexName].Value * _selfData.ExtractionTime );
 				if( newTime < bsetTime )
 				{
 					bsetTime = newTime;
-					targetIndex = vertexName;
+					targetVertex = vertexName;
 				}
 			}
-			_graphNotion.GetPath(startVertex , targetIndex , out path);
+			_graphNotion.GetPath(startVertex , targetVertex , out path);
+			path.Reverse();
 		}
 
 		public override void Update()
@@ -77,30 +80,7 @@ namespace Mamont.Core.Train.Model
 				 _currGoValue ,
 				 _selfData.TargetVertexName);
 
-			path.Reverse();
-
-			if( path.Count == 0 )
-			{
-				_currWalkPath = path;
-				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
-				_selfData.CurrVertexName = _selfData.TargetVertexName;
-				_selfActions.SetPathToMine(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currEdge.Weight - _currGoValue);
-			}
-			else if( path[0] == _selfData.TargetVertexName )
-			{
-				_currWalkPath = path;
-				_selfActions.SetPathToMine(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currGoValue);
-			}
-			else
-			{
-				_currWalkPath = path;
-				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
-				_selfData.CurrVertexName = _selfData.TargetVertexName;
-				_selfActions.SetPathToMine(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currEdge.Weight - _currGoValue);
-			}
+			SetPathAfterValueChanged(path , this.GetType());
 		}
 
 	}

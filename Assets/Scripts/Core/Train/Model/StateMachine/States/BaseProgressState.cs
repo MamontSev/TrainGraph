@@ -24,7 +24,7 @@ namespace Mamont.Core.Train.Model
 		{
 			float collectedCount = _selfData.VertexDict[_selfData.CurrVertexName].Value;
 			_scoreControl.AddScore(collectedCount);
-			_stateMachine.Enter<GoToMineStateState>();
+			_stateMachine.Enter<GoToMineState>();
 		}
 
 	}

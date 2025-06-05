@@ -27,25 +27,20 @@ namespace Mamont.Core.Train.Model
 			}
 			CalculateFromVertex(
 			 _selfData.CurrVertexName ,
-			 out _currWalkPath);
+			 out List<int> path);
+			StartGo(path,this.GetType());
+        }
 
-
-			_currWalkPath.Reverse();
-			_selfActions.SetPathToBase(new List<int>(_currWalkPath));
-			GoToVertex(0);
-
-		}
-
-		private void CalculateFromVertex( int startVertex , out List<int> path , float offsetValue = 0.0f , int offfsetVertex = -1 )
+		private void CalculateFromVertex( int startVertex , out List<int> path , float offsetValue = 0.0f , int offsetVertex = -1 )
 		{
-			int targetIndex = 1;
+			int targetVertex = 1;
 			float param = -1.0f;
 			_graphNotion.Calculate(startVertex , out Dictionary<int , int> outDistances);
 			foreach( var item in outDistances )
 			{
 				int vertexName = item.Key;
 				float dist = item.Value;
-				if( vertexName == offfsetVertex )
+				if( vertexName == offsetVertex )
 				{
 					dist -= offsetValue;
 				}
@@ -70,10 +65,11 @@ namespace Mamont.Core.Train.Model
 				if( newParam > param )
 				{
 					param = newParam;
-					targetIndex = vertexName;
+					targetVertex = vertexName;
 				}
 			}
-			_graphNotion.GetPath(startVertex , targetIndex , out path);
+			_graphNotion.GetPath(startVertex , targetVertex , out path);
+			path.Reverse();
 		}
 
 
@@ -89,30 +85,8 @@ namespace Mamont.Core.Train.Model
 				 out List<int> path ,
 				 _currGoValue ,
 				 _selfData.TargetVertexName);
-			path.Reverse();
 
-			if( path.Count == 0 )
-			{
-				_currWalkPath = path;
-				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
-				_selfData.CurrVertexName = _selfData.TargetVertexName;
-				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currEdge.Weight - _currGoValue);
-			}
-			else if( path[0] == _selfData.TargetVertexName )
-			{
-				_currWalkPath = path;
-				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currGoValue);
-			}
-			else
-			{
-				_currWalkPath = path;
-				_currWalkPath.Insert(0 , _selfData.CurrVertexName);
-				_selfData.CurrVertexName = _selfData.TargetVertexName;
-				_selfActions.SetPathToBase(new List<int>(_currWalkPath));
-				GoToVertex(0 , _currEdge.Weight - _currGoValue);
-			}
+			SetPathAfterValueChanged(path, this.GetType());
 		}
 	}
 }

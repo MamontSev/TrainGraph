@@ -2,6 +2,7 @@
 using Mamont.Core.Graph;
 using Mamont.Core.Graph.Notion;
 using Mamont.Core.Graph.Viewer;
+using Mamont.Core.Inspector;
 using Mamont.Core.Score;
 using Mamont.Core.Train;
 using Mamont.UI.LevelMenu.HUD;
@@ -23,6 +24,7 @@ namespace Mamont.Installer
 			BindLevelMenuPopUpFacrtory();
 			BindLevelMenuHudFactory();
 			BindTrainViewerFactory();
+			BindInsperctorValue();
 		}
 
 
@@ -81,6 +83,16 @@ namespace Mamont.Installer
 			.AsSingle()
 			.NonLazy();
 		}
+		private void BindInsperctorValue()
+		{
+			Container
+			.Bind<InsperctorValue>()
+			.FromComponentInHierarchy()
+			.AsSingle()
+			.NonLazy();
+		}
+
+		
 
 	}
 }
